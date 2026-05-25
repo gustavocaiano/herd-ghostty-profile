@@ -15,6 +15,18 @@ next_workspace = "ctrl+down"
 
 e Ghostty traduz `Ctrl+Cmd+↑/↓` para `Ctrl+↑/↓`.
 
+## `Cmd+N` deixou de criar workspace depois do Herdr 0.6
+
+No Herdr 0.6, `prefix+n` passou a ser navegação para o próximo tab. O novo workspace é `prefix+shift+n`.
+
+No profile Ghostty Herdr, usa:
+
+```ini
+keybind = super+n=text:\x02N
+```
+
+Isto envia `Ctrl+B` seguido de `Shift+N`.
+
 ## `Herdr.app` não abre Herdr
 
 Recria a app:
