@@ -27,6 +27,25 @@ Nota: o launcher é compilado com `/usr/bin/clang`, por isso precisas das Xcode 
 
 O launcher também limpa variáveis `HERDR_*` herdadas, para permitir abrir `Herdr.app` mesmo quando o comando é executado a partir de um pane já dentro do Herdr.
 
+## Apps por desktop (parameterização)
+
+O script é parameterizado por variáveis de ambiente e é reutilizado pelo
+`scripts/sync-desktop-apps.sh` para criar uma app por desktop remoto do Desktop
+Switcher:
+
+- `APP_NAME` — nome da app e do ícone (default `Herdr`; ex.: `Devbox`)
+- `BUNDLE_ID` — bundle id (default `com.gustavocaiano.herdr`; ex.:
+  `com.gustavocaiano.herdr.devbox`)
+- `TARGET_APP` — caminho destino (default `$HOME/Applications/Herdr.app`; ex.:
+  `$HOME/Applications/Devbox.app`)
+- `SOURCE_APP`, `ICON_PATH`, `FORCE` — opcionais, com os defaults habituais
+
+A app de cada desktop remoto chama-se pelo nome efetivo do desktop (campo
+`app_name` do `desktops.toml`, ou `label` se `app_name` não estiver definido) e
+usa bundle id `com.gustavocaiano.herdr.<id>` (com `_` substituído por `-`). A
+cópia usa clonefile APFS quando disponível, com fallback para cópia normal; por
+agora todas as apps reutilizam o mesmo ícone `assets/herdr.icns`.
+
 ## Vantagens
 
 - Dock/app switcher separado.

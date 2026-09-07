@@ -66,3 +66,42 @@ Corre:
 ```
 
 Ou instala o updater diário em `docs/updater.md`.
+
+## A app de um desktop remoto (ex.: `Devbox.app`) não existe
+
+Corre:
+
+```bash
+~/.config/herd/scripts/sync-desktop-apps.sh
+```
+
+Isto cria apenas as apps em falta — uma por desktop remoto, com o nome efetivo
+do desktop (`app_name` ou `label`) e bundle id `com.gustavocaiano.herdr.<id>` —
+e nunca recria apps que já existam. O instalador do Desktop Switcher também
+corre este passo.
+
+## A app de um desktop remoto ficou desatualizada depois de atualizar a Ghostty
+
+O updater (`scripts/update-herdr-app.sh`) processa `Herdr.app` e todas as apps
+por desktop de forma independente e recria as desatualizadas. Se a app estiver
+aberta, é skipada por segurança — fecha-a e volta a correr o updater.
+
+## O `--check` reporta assinatura inválida ou bundle id errado numa app por desktop
+
+O `install-desktop-switcher.sh --check` verifica presença, assinatura e bundle
+id de cada app por desktop. Para corrigir, recria a app manualmente (exemplo
+para o `devbox`):
+
+```bash
+APP_NAME="Devbox" BUNDLE_ID="com.gustavocaiano.herdr.devbox" \
+  TARGET_APP="$HOME/Applications/Devbox.app" \
+  ~/.config/herd/scripts/create-herdr-app.sh
+```
+
+## O primeiro lançamento do `devbox` depois das apps por desktop falha com "configuration changed while pid N is still open"
+
+Uma janela antiga do cliente devbox (do design de bundle único `Herdr.app`)
+continua aberta e o registo dela em `~/.local/state/herdr-desktop-switcher/`
+ainda aponta para o bundle/caminho partilhados. Fecha essa janela antiga uma
+vez; o registo obsoleto é removido e o lançamento seguinte usa a `Devbox.app`
+normalmente.

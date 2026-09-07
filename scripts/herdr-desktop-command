@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -euo pipefail
+
+die() {
+  printf 'herdr-desktop-command: %s\n' "$*" >&2
+  exit 64
+}
+
+[ "$#" -eq 0 ] || die "this command takes no arguments"
+
+[ -n "${HERDR_DESKTOP_SWITCHER_BIN:-}" ] || die "HERDR_DESKTOP_SWITCHER_BIN is required"
+[ -n "${HERDR_DESKTOPS_TOML:-}" ] || die "HERDR_DESKTOPS_TOML is required"
+[ -n "${HERDR_DESKTOP_ID:-}" ] || die "HERDR_DESKTOP_ID is required"
+[ -n "${HERDR_DESKTOP_EXPECTED_PLAN:-}" ] || die "HERDR_DESKTOP_EXPECTED_PLAN is required"
+[ -n "${HERDR_REAL_BIN:-}" ] || die "HERDR_REAL_BIN is required"
+
+[[ "$HERDR_DESKTOP_ID" =~ ^[a-z0-9][a-z0-9_-]{0,63}$ ]] || die "invalid HERDR_DESKTOP_ID"
+[[ "$HERDR_DESKTOP_SWITCHER_BIN" = /* && -f "$HERDR_DESKTOP_SWITCHER_BIN" && -x "$HERDR_DESKTOP_SWITCHER_BIN" ]] || die "HERDR_DESKTOP_SWITCHER_BIN must be an absolute executable file"
+[[ "$HERDR_DESKTOPS_TOML" = /* && -f "$HERDR_DESKTOPS_TOML" && -r "$HERDR_DESKTOPS_TOML" ]] || die "HERDR_DESKTOPS_TOML must be an absolute readable file"
+[[ "$HERDR_REAL_BIN" = /* && -f "$HERDR_REAL_BIN" && -x "$HERDR_REAL_BIN" ]] || die "HERDR_REAL_BIN must be an absolute executable file"
+
+unset HERDR_ENV HERDR_SOCKET_PATH HERDR_SESSION HERDR_WORKSPACE_ID HERDR_PANE_ID
+unset HERDR_ACTIVE_WORKSPACE_ID HERDR_ACTIVE_TAB_ID HERDR_ACTIVE_PANE_ID HERDR_ACTIVE_PANE_CWD
+
+exec "$HERDR_DESKTOP_SWITCHER_BIN" client "$HERDR_DESKTOP_ID"

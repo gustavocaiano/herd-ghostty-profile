@@ -14,13 +14,34 @@ focus_pane_up = "alt+k"
 focus_pane_right = "alt+l"
 
 [theme]
-name = "one-dark"
+name = "rose-pine"
 
+auto_switch = false
 [ui.toast]
-delivery = "terminal"
+delivery = "herdr"
 
 [ui]
 show_agent_labels_on_pane_borders = true
 
+agent_panel_sort = "spaces"
+status_indicators = "symbols"
 [ui.sound]
 enabled = true
+
+[experimental]
+pane_history = true
+
+[[keys.command]]
+key = "cmd+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"   # <plugin_id>.<action_id> — same pattern as cmd+r
+
+[[keys.command]]
+key = "cmd+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the id, not the name
+
+[[keys.command]]
+key = "cmd+shift+k"
+type = "plugin_action"
+command = "herdr-desktop-switcher.open"

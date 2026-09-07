@@ -40,20 +40,55 @@ assets/herdr.icns                         ícone arredondado para Herdr.app
 ghostty-herdr.conf                        snapshot do profile Ghostty para Herdr
 herdr-config.toml                         snapshot das keybindings Herdr
 herd.zsh                                  função zsh simples
-scripts/create-herdr-app.sh               cria/recria ~/Applications/Herdr.app
-scripts/update-herdr-app.sh               atualiza Herdr.app quando Ghostty muda
+desktops.toml                             endpoints declarativos do Desktop Switcher (sem credenciais)
+plugins/herdr-desktop-switcher/           plugin Desktop Switcher (binário em bin/, gitignored)
+scripts/create-herdr-app.sh               cria/recria ~/Applications/Herdr.app e outras apps Herdr
+scripts/update-herdr-app.sh               atualiza Herdr.app e as apps por desktop quando Ghostty muda
+scripts/sync-desktop-apps.sh              cria as apps por desktop remoto em falta (ex.: Devbox.app)
+scripts/install-desktop-switcher.sh       instalador e --check do Desktop Switcher
+scripts/herdr-desktop-command             command shim genérico do Desktop Switcher
+scripts/herdr-desktop-launch.swift        launcher macOS do Desktop Switcher
+scripts/sync-configs.sh                   instala snapshots de config nos caminhos ativos
 launchd/com.gustavocaiano.herdr-app-updater.plist
 docs/setup.md                             setup completo
 docs/herdr-app.md                         detalhes da mini app
 docs/updater.md                           updater diário via launchd
+docs/desktop-switcher.md                  detalhes do Desktop Switcher
 docs/troubleshooting.md                   notas e problemas conhecidos
 ```
+
+## Desktop Switcher (multi-remote)
+
+Para lançar vários clientes Herdr (Local, `devbox`, futuros remotos), cada um na
+sua própria app do Dock — `Herdr.app` para o Local, `Devbox.app` para o
+`devbox` — usar o instalador do plugin:
+
+```bash
+~/.config/herd/scripts/install-desktop-switcher.sh
+```
+
+Verificação só-de-leitura:
+
+```bash
+~/.config/herd/scripts/install-desktop-switcher.sh --check
+```
+
+Atalho do picker (ativado pelo instalador via `scripts/sync-configs.sh`):
+
+- `Cmd+Shift+K` → abre o Desktop Switcher
+
+O instalador cria as apps por desktop em falta via
+`scripts/sync-desktop-apps.sh` (nunca recria as que já existem; a cópia usa
+clonefile APFS quando disponível). Detalhes em `docs/desktop-switcher.md`. O
+instalador não escreve credenciais nem configuração SSH; o target remoto `dev`
+tem de estar configurado em `~/.ssh/config` antes de QA remoto.
 
 ## Caminhos ativos
 
 - Ghostty profile usado pelo Herdr: `~/.config/ghostty/herdr`
 - Config Herdr: `~/.config/herdr/config.toml`
 - Mini app opcional: `~/Applications/Herdr.app`
+- Apps por desktop (Desktop Switcher): `~/Applications/Herdr.app` (Local), `~/Applications/Devbox.app` (`devbox`), etc.
 
 ## Setup rápido: função `herd`
 
@@ -125,7 +160,7 @@ cp ~/.config/herd/launchd/com.gustavocaiano.herdr-app-updater.plist "$HOME/Libra
 launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.gustavocaiano.herdr-app-updater.plist"
 ```
 
-Ele corre diariamente e só recria `Herdr.app` se a versão de `/Applications/Ghostty.app` tiver mudado. Se `Herdr.app` estiver aberta, faz skip por segurança.
+Ele corre diariamente e recria `Herdr.app` e as apps por desktop (ex.: `Devbox.app`) quando a versão de `/Applications/Ghostty.app` muda. As apps que estiverem abertas são skippadas por segurança.
 
 ## Notas importantes
 

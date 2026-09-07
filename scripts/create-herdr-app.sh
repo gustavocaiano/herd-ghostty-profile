@@ -29,9 +29,22 @@ if [[ -d "$TARGET_APP" ]] && pgrep -f "$TARGET_APP/Contents/MacOS/(herdr-launche
 fi
 
 mkdir -p "$(dirname "$TARGET_APP")"
+
+# Probe once whether cp -c (APFS clonefile) works on the destination filesystem,
+# so per-desktop app copies cost ~0 extra disk. The probe is silent and its temp
+# files are always removed; plain cp -R remains the fallback.
+copy_flags=(-R)
+clone_probe_src="$(mktemp "$(dirname "$TARGET_APP")/.herdr-clone-probe.XXXXXX")"
+clone_probe_dst="${clone_probe_src}.clone"
+printf 'x' > "$clone_probe_src" 2>/dev/null || :
+if cp -c "$clone_probe_src" "$clone_probe_dst" 2>/dev/null; then
+  copy_flags=(-Rc)
+fi
+rm -f "$clone_probe_src" "$clone_probe_dst"
+
 rm -rf "$TARGET_APP"
 log "copying $SOURCE_APP -> $TARGET_APP"
-cp -R "$SOURCE_APP" "$TARGET_APP"
+cp "${copy_flags[@]}" "$SOURCE_APP" "$TARGET_APP"
 
 PLIST="$TARGET_APP/Contents/Info.plist"
 RESOURCES="$TARGET_APP/Contents/Resources"

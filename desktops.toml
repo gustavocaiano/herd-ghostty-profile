@@ -1,0 +1,15 @@
+# Desktop endpoints are data, never shell commands. Remote targets should be
+# non-interactive SSH aliases (or user@host values) configured outside Git.
+version = 1
+default = "local"
+
+[desktops.local]
+mode = "local"
+label = "Local"
+
+[desktops.devbox]
+mode = "remote"
+label = "Devbox"
+target = "dev"
+session = "devbox"
+keybindings = "local"

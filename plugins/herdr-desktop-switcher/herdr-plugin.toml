@@ -1,0 +1,22 @@
+id = "herdr-desktop-switcher"
+name = "Herdr Desktop Switcher"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Launch or focus endpoint-specific Herdr desktop clients"
+platforms = ["macos"]
+
+[[build]]
+command = ["cargo", "build", "--release"]
+
+# Placement is selected at runtime through plugin.pane.open. The manifest keeps
+# the entrypoint on Herdr's safe, broadly normalized pane shape.
+[[panes]]
+id = "picker"
+title = "Desktops"
+command = ["./bin/herdr-desktop-switcher", "picker"]
+
+[[actions]]
+id = "open"
+title = "Open desktop switcher"
+description = "Choose a Herdr desktop client to launch or focus"
+command = ["/bin/bash", "scripts/summon.sh"]

@@ -1,0 +1,13 @@
+[package]
+name = "herdr-desktop-switcher"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+libc = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["io-util", "net", "rt", "time"] }
+toml = "0.8"
+unicode-width = "0.2"

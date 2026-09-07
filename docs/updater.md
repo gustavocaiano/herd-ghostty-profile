@@ -1,10 +1,10 @@
 # Updater diário
 
-O updater compara a versão de `/Applications/Ghostty.app` com a versão da cópia `~/Applications/Herdr.app`.
+O updater compara a versão de `/Applications/Ghostty.app` com a versão de cada app: `~/Applications/Herdr.app` (Local) e todas as apps por desktop configuradas no `desktops.toml` (ex.: `~/Applications/Devbox.app` para o `devbox`).
 
-Se forem diferentes, recria `Herdr.app` usando `scripts/create-herdr-app.sh`.
+Cada app é processada de forma independente: se a versão for diferente, a app é recriada com `scripts/create-herdr-app.sh` (com os `APP_NAME`/`BUNDLE_ID`/`TARGET_APP` correspondentes); se já estiver atualizada, fica como está.
 
-Por segurança, se `Herdr.app` estiver aberta, o updater faz skip e tenta novamente na próxima execução.
+Por segurança, cada app que estiver aberta é skipada (registada no log, sem falhar a execução) e tenta-se novamente na próxima execução. No fim, o updater escreve a versão fonte em `~/.config/herd/state/ghostty-version.txt` e, se o Desktop Switcher estiver instalado, corre o respetivo `--check` só-de-leitura.
 
 ## Instalar LaunchAgent
 
